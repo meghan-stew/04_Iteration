@@ -333,12 +333,35 @@ mutate(splot = map2(data, r2,
                             )+
                       geom_point()+
                       geom_smooth(method = "lm")+
-                      labs(subtitle = paste("R2:", .y))
+                      labs(subtitle = paste("R2:", round (.y, 3)))
                     ))
+
+nematode_mods_sel_plots
 
   # Making scatterplots with r2 in subtitle, and correct x and y axis titles  
 nematode_mods_sel_plots$splot[3]
 
+nematode_mods_sel_plots <- nematode_mods_sel %>%
+mutate(splot_better = pmap(list(.df = data,
+                                .rd = r2,
+                                .rv = resp_var,
+                                .ev = exp_var),
+                           function(.df, .rd, .rv, .ev)
+                             ggplot(data = .df,
+                                    aes(x = exp_val,
+                                        y = resp_val
+                                        )
+                                    )+
+                             geom_point() +
+                             geom_smooth(method = "lm") + 
+                             labs(subtitle = paste("R2:", round (.rd, 3)),
+                              x =  .ev,
+                              y = .rv
+                             )
+                                
+                                ))
+
+nematode_mods_sel_plots$splot_better[7]
 ```
 Now, we had 2 iterating elements to create `splot`, so we needed to use `map2()`.  
 

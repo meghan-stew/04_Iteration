@@ -47,6 +47,9 @@ soybox_1
   
   
 ```
+```{r}
+summary(soybox_1)
+```
   
 ## Q1 - Create a function  
 Here, you are asked to create a function.  
@@ -58,18 +61,41 @@ The function inputs are:
   - y: the column name inside df to be plotted on the y axis  
 
 Once you create the function, make sure it works by applying it to one of the locations where K leaf concentration was collected.  
-```{r myplot function}
-
+```{r myplot function pt 1}
 boxofsoy <- soybox_1 %>%
   pivot_longer(cols = tifton_k_pct:macon_k_pct,
                names_to = "county_var",
                values_to = "k_value"
                )
-  #arrange(county_var)
 
 boxofsoy
+```
+
+
+```{r myplot function pt 2}
+myplot <- function(boxofsoy, county_k_pct) {
+  boxofsoy %>%
+    filter(county_var == county_k_pct) %>%
+    ggplot(aes(x = factor(k_rate_lbac), y = k_value)) +
+    geom_boxplot() + 
+    labs(
+      title = paste("Potassium (K) Concentrations Per K Rate:", county_k_pct),
+      x = "K rate (lb/ac)",
+      y = "K concentration"
+    ) + 
+    theme_dark()
+}
+
+
 
 ```
+
+
+```{r}
+
+
+```
+
 
 
 ## Q2 - Iterate over locations  
@@ -78,6 +104,21 @@ On the step above you created a function to create boxplot for one location (one
 Now, you are asked to apply this function to each location in the data set.  
 For that, use one of the functions in the `map` family from the purr package.  
 When making your plots, make sure to add a title to represent which location is represented in each plot.  
+
+```{r mapping}
+county <- boxofsoy %>%
+  distinct(county_var) %>%
+  pull(county_var)
+
+soyplots <- map(county, ~myplot(boxofsoy, .x))
+             names(plots) <- county
+             
+             
+walk(soyplots, print)
+
+#notetoself:check original summay means for matching plots
+```
+
 
 # Submitting your work  
 Once you have developed all the code and answers, make sure to Render this quarto file.  

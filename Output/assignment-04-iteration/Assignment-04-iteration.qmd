@@ -72,6 +72,8 @@ boxofsoy
 ```
 
 
+
+
 ```{r myplot function pt 2}
 myplot <- function(boxofsoy, county_k_pct) {
   boxofsoy %>%
@@ -90,13 +92,11 @@ myplot <- function(boxofsoy, county_k_pct) {
 
 ```
 
-
-```{r}
+```{r check}
+myplot(boxofsoy, "macon_k_pct")
 
 
 ```
-
-
 
 ## Q2 - Iterate over locations  
 On the step above you created a function to create boxplot for one location (one column in your original data set).  
@@ -111,7 +111,7 @@ county <- boxofsoy %>%
   pull(county_var)
 
 soyplots <- map(county, ~myplot(boxofsoy, .x))
-             names(plots) <- county
+             names(soyplots) <- county
              
              
 walk(soyplots, print)
